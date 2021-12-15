@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CentreController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,3 +17,18 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+// route to list centres
+Route::get('centres', [CentreController::class, 'index'])->name('centres');
+
+// add centre
+Route::get('centre/add', [CentreController::class, 'add'])->name('addCentre');
+
+// store user
+Route::post('centre/store', [CentreController::class, 'store'])->name('storeCentre');
+
+// edit user
+Route::get('centre/edit/{id}', [CentreController::class, 'edit'])->name('editCentre');
+
+// update user
+Route::PATCH('centre/update/{id}', [CentreController::class, 'update'])->name('updateCentre');
