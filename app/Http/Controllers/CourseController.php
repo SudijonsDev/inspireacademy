@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Course;
+use App\Models\Subject;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
 
 class CourseController extends Controller
 {
@@ -14,7 +16,8 @@ class CourseController extends Controller
      */
     public function index()
     {
-        //
+        $courses = Course::where('id', '>', 0)->get();
+        return view('course.index', ['courses' => $courses]);
     }
 
     /**
@@ -22,9 +25,10 @@ class CourseController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function add()
     {
-        //
+        $subjects = Subject::where('id','>', 0)->get();
+        return view('course.add', ['subjects' => $subjects]);
     }
 
     /**
@@ -35,7 +39,21 @@ class CourseController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $course = Course::where('grade', '=', $request->grade)
+            ->where('subject_id', '=', $request->subject_id)->count();
+        if ($course > 0)
+            return redirect('course/add')->withInput()->with('danger', 'Course for that grade and subject already exists');
+
+        $input = $request->all();
+        $course = new Course($input);
+        $course->name = $request->name;
+        $course->grade = $request->grade;
+        $course->subject_id = $request->subject_id;
+
+        if ($course->save())
+            return Redirect::route('courses')->with('success', 'Successfully added course!');
+        else
+            return Redirect::route('course.add')->withInput()->withErrors($course->errors());
     }
 
     /**
@@ -55,9 +73,14 @@ class CourseController extends Controller
      * @param  \App\Models\Course  $course
      * @return \Illuminate\Http\Response
      */
-    public function edit(Course $course)
+    public function edit($id)
     {
-        //
+        $course = Course::find($id);
+        $subjects = Subject::where('id', '>', 0)->get();
+        $subject = Subject::where('id', '=', $course->subject_id)->first();
+        $sid = $subject->id;
+
+        return view('course.edit', compact('course', 'subjects', 'sid'));
     }
 
     /**
@@ -67,9 +90,25 @@ class CourseController extends Controller
      * @param  \App\Models\Course  $course
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Course $course)
+    public function update(Request $request, $id)
     {
-        //
+        $course = Course::find($id);
+
+        $course_check = Course::where('grade', '=', $request->grade)
+            ->where('subject_id', '=', $request->subject_id)->first();
+
+        if ($course_check && $course_check->id != $id)
+            return Redirect::route('editCourse', [$id])->withInput()
+                ->with('danger', 'Course for that grade and subject already exists');
+
+        $course->name = $request->name;
+        $course->grade = $request->grade;
+        $course->subject_id = $request->subject_id;
+
+        if ($course->update())
+            return Redirect::route('courses')->with('success', 'Successfully updated course');
+        else
+            return Redirect::route('editCourse', [$id])->withInput()->withErrors($course->errors());
     }
 
     /**

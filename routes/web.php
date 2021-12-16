@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CentreController;
 use App\Http\Controllers\LearnerController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\SubjectController;
+use App\Http\Controllers\CourseController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,6 +27,9 @@ Route::get('login', [UserController::class, 'showLogin'])->name('login');
 
 // process the login form
 Route::post('login', array(UserController::class, 'doLogin'))->name('login');
+
+// route to list users
+Route::get('users', [UserController::class, 'index'])->name('users');
 
 // add user
 Route::get('user/add', [UserController::class, 'add'])->name('addUser');
@@ -64,3 +69,33 @@ Route::get('learner/edit/{id}', [LearnerController::class, 'edit'])->name('editL
 
 // update learner
 Route::PATCH('learner/update/{id}', [LearnerController::class, 'update'])->name('updateLearner');
+
+// route to list subjects
+Route::get('subjects', [SubjectController::class, 'index'])->name('subjects');
+
+// add subject
+Route::get('subject/add', [SubjectController::class, 'add'])->name('addSubject');
+
+// store subject
+Route::post('subject/store', [SubjectController::class, 'store'])->name('storeSubject');
+
+// edit subject
+Route::get('subject/edit/{id}', [SubjectController::class, 'edit'])->name('editSubject');
+
+// update subject
+Route::PATCH('subject/update/{id}', [SubjectController::class, 'update'])->name('updateSubject');
+
+// route to list courses
+Route::get('courses', [CourseController::class, 'index'])->name('courses');
+
+// add course
+Route::get('course/add', [CourseController::class, 'add'])->name('addCourse');
+
+// store course
+Route::post('course/store', [CourseController::class, 'store'])->name('storeCourse');
+
+// edit subject
+Route::get('course/edit/{id}', [CourseController::class, 'edit'])->name('editCourse');
+
+// update subject
+Route::PATCH('course/update/{id}', [CourseController::class, 'update'])->name('updateCourse');

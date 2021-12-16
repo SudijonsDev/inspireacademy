@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Subject;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
 
 class SubjectController extends Controller
 {
@@ -14,7 +15,8 @@ class SubjectController extends Controller
      */
     public function index()
     {
-        //
+        $subjects = Subject::where('id', '>', 0)->get();
+        return view('subject.index', ['subjects' => $subjects]);
     }
 
     /**
@@ -22,9 +24,9 @@ class SubjectController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function add()
     {
-        //
+        return view('subject.add');
     }
 
     /**
@@ -35,7 +37,18 @@ class SubjectController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $subject = Subject::where('name', '=', $request->name)->count();
+        if ($subject > 0)
+            return redirect('subject/add')->withInput()->with('danger', 'Subject already exists!');
+
+        $input = $request->all();
+        $subject = new Subject($input);
+        $subject->name = $request->name;
+
+        if ($subject->save())
+            return Redirect::route('subjects')->with('success', 'Successfully added subject!');
+        else
+            return Redirect::route('subject.add')->withInput()->withErrors($subject->errors());
     }
 
     /**
@@ -55,9 +68,10 @@ class SubjectController extends Controller
      * @param  \App\Models\Subject  $subject
      * @return \Illuminate\Http\Response
      */
-    public function edit(Subject $subject)
+    public function edit($id)
     {
-        //
+        $subject = Subject::find($id);
+        return view('subject.edit', ['subject' => $subject]);
     }
 
     /**
@@ -67,9 +81,21 @@ class SubjectController extends Controller
      * @param  \App\Models\Subject  $subject
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Subject $subject)
+    public function update(Request $request, $id)
     {
-        //
+        $subject = Subject::find($id);
+
+        $subject_check = Subject::where('name', '=', $request->name)->first();
+
+        if ($subject_check && $subject_check->id != $id)
+            return Redirect::route('editSubject', [$id])->withInput()->with('danger', 'Subject already exists');
+
+        $subject->name = $request->name;
+
+        if ($subject->update())
+            return Redirect::route('subjects')->with('success', 'Successfully updated subject');
+        else
+            return Redirect::route('editSubject', [$id])->withInput()->withErrors($subject->errors());
     }
 
     /**

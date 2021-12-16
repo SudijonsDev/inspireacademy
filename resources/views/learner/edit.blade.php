@@ -20,7 +20,7 @@
 
                     <div class="form-group form-group-sm">
                         {!! Form::label('name', 'Name') !!}
-                        {!! Form::text('name', $learner->firstNames, array('class' => 'form-control form-control-sm
+                        {!! Form::text('name', $learner->name, array('class' => 'form-control form-control-sm
                         input-sm', 'required')) !!}
                     </div>
 
@@ -28,6 +28,18 @@
                         {!! Form::label('surname', 'Surname') !!}
                         {!! Form::text('surname', $learner->surname, array('class' => 'form-control form-control-sm
                         input-sm', 'required')) !!}
+                    </div>
+
+                    <div class="form-group form-group-sm">
+                        {!! Form::label('user_name', 'User Name') !!}
+                        {!! Form::text('user_name', $learner->user_name, array('class' => 'form-control form-control-sm
+                        input-sm', 'required')) !!}
+                    </div>
+
+                    <div class="form-group">
+                        {!! Form::label('password', 'Password') !!}
+                        <input class = 'form-control input-sm' type = "password" required name="password" id="password"
+                               value= "{!!$learner->password !!}" >
                     </div>
 
                     <div class="form-group form-group-sm">
@@ -43,19 +55,7 @@
                         </select>
                     </div>
 
-                    <div class="form-group form-group-sm">
-                        {!! Form::label('user_name', 'User Name') !!}
-                        {!! Form::text('user_name', $user->user_name, array('class' => 'form-control form-control-sm
-                        input-sm', 'required')) !!}
-                    </div>
-
-                    <div class="form-group">
-                        {!! Form::label('password', 'Password') !!}
-                        <input class = 'form-control input-sm' type = "password" required name="password" id="password"
-                               value= "{!!$user->password !!}" >
-                    </div>
-
-                    <a href="{!!URL::route('learners')!!}" class="btn btn-sm btn-secondary" role="button">Cancel</a>
+                    <a href="{!!URL::route('login')!!}" class="btn btn-sm btn-secondary" role="button">Cancel</a>
                     {!! Form::submit('Update', array('class' => 'btn btn-sm btn-info')) !!}
                     {!! Form::close() !!}
                 </div>

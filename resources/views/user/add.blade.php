@@ -29,8 +29,8 @@
                     </div>
 
                     <div class="form-group">
-                        {!! Form::label('user_name', 'User Name') !!}
-                        {!! Form::text('user_name', Request::old('user_name'), array('class' => 'form-control', 'required')) !!}
+                        {!! Form::label('email', 'Email Address') !!}
+                        {!! Form::text('email', Request::old('email'), array('class' => 'form-control', 'required')) !!}
                     </div>
 
                     <div class="form-group">

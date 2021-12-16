@@ -29,6 +29,16 @@
                     </div>
 
                     <div class="form-group">
+                        {!! Form::label('user_name', 'User Name') !!}
+                        {!! Form::text('user_name', Request::old('user_name'), array('class' => 'form-control', 'required')) !!}
+                    </div>
+
+                    <div class="form-group">
+                        {!! Form::label('password', 'Password') !!}
+                        {!! Form::password('password', array('class' => 'form-control input-sm', 'required')) !!}
+                    </div>
+
+                    <div class="form-group">
                         {!! Form::Label('centre_id', 'Centre') !!}
                         <select class="form-control input-sm form-control-sm" name="centre_id" id="centre_id">
                             <option value="">Select a Centre</option>
@@ -37,16 +47,6 @@
                                 selected="selected"@endif>{{$centre->name}}</option>
                             @endforeach
                         </select>
-                    </div>
-
-                    <div class="form-group">
-                        {!! Form::label('user_name', 'User Name') !!}
-                        {!! Form::text('user_name', Request::old('user_name'), array('class' => 'form-control', 'required')) !!}
-                    </div>
-
-                    <div class="form-group">
-                        {!! Form::label('password', 'Password') !!}
-                        {!! Form::password('password', array('class' => 'form-control input-sm', 'required')) !!}
                     </div>
 
                     <a href="{!!URL::route('login')!!}" class="btn btn-info" role="button">Cancel</a>
