@@ -9,7 +9,7 @@
         <div class="col-xs-12 col-sm-8 col-md-4 col-sm-offset-2 col-md-offset-1">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3 class="panel-title">Add a New Centre</h3>
+                    <h3 class="panel-title">Add New Centre</h3>
                 </div>
                 <div class="panel-body">
                     <!-- if there are creation errors, they will show here -->

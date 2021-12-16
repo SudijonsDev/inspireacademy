@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
@@ -34,10 +38,26 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $input = $request->all();
+        $user = new User($input);
+        $user->name = $request->name;
+        $user->surname = $request->surname;
+        $user->user_name = $request->user_name;
+        $user->password = Hash::make($request->password);
+
+        $exists = User::where('user_name', $user->user_name)->first();
+        if ($exists) {
+            return Redirect::route('user.add')->withInput()
+                ->with('danger', 'User with user_name "' . $user->user_name . '" already exists!');
+        }
+
+        if ($user->save())
+            return Redirect::route('learners')->with('success', 'Successfully added user!');
+        else
+            return Redirect::route('user.add')->withInput()->withErrors($user->errors());
     }
 
-    /**
+        /**
      * Display the specified resource.
      *
      * @param  int  $id
@@ -80,5 +100,27 @@ class UserController extends Controller
     public function destroy($id)
     {
         //
+    }
+    public function showLogin()
+    {
+        // show the form
+        return view('user.login');
+    }
+    public function doLogin(Request $request)
+    {
+        // validate the credentials, create rules for the input
+        $users = User::where('user_name', '=', $request->user_name)->get();
+
+        // check if email address exists
+        if ($users -> isEmpty())
+            return Redirect::to('login')->withInput()
+                ->with('danger', 'Sorry user name or password is incorrect or you need to register first');
+
+        dd('I am here');
+    }
+    public function doLogout()
+    {
+        Auth::logout();
+        return Redirect::to('login');
     }
 }
