@@ -18,15 +18,14 @@ class CreateRegisteredCoursesTable extends Migration
                 $table->id();
                 $table->string('name');
                 $table->enum('status', ['Y', 'N'])->default('Y');
+                $table->smallInteger('registeredStudents');
                 $table->unsignedBigInteger('learner_id');
                 $table->unsignedBigInteger('course_id');
-                $table->unsignedBigInteger('centre_id');
                 $table->timestamps();
             });
             Schema::table('registered_courses', function ($table) {
                 $table->foreign('learner_id')->references('id')->on('learners');
                 $table->foreign('course_id')->references('id')->on('courses');
-                $table->foreign('centre_id')->references('id')->on('centres');
             });
         }
     }

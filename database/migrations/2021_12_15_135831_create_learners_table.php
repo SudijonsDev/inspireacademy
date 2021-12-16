@@ -18,8 +18,6 @@ class CreateLearnersTable extends Migration
                 $table->id();
                 $table->string('firstNames');
                 $table->string('surname');
-                $table->smallInteger('grade');
-                $table->string('school');
                 $table->enum('agreement', ['Y', 'N'])->default('N');
                 $table->unsignedBigInteger('centre_id');
                 $table->timestamps();
