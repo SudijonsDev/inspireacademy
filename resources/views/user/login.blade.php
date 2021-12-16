@@ -14,7 +14,7 @@
                     {!! Form::open(array('url' => 'login')) !!}
 
                     <div class="form-group">
-                        {!! Form::text('user_name', Request::old('user_name'), array('class' => 'form-control input-sm',
+                        {!! Form::text('email', Request::old('email'), array('class' => 'form-control input-sm',
                         'placeholder' => 'User Name')) !!}
                     </div>
 

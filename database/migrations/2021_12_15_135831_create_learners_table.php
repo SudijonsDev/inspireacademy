@@ -16,9 +16,11 @@ class CreateLearnersTable extends Migration
         if (!Schema::hasTable('learners')) {
             Schema::create('learners', function (Blueprint $table) {
                 $table->id();
-                $table->string('firstNames');
+                $table->string('name');
                 $table->string('surname');
                 $table->enum('agreement', ['Y', 'N'])->default('N');
+                $table->string('user_name')->unique();
+                $table->string('password');
                 $table->unsignedBigInteger('centre_id');
                 $table->timestamps();
             });

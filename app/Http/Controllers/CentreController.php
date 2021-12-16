@@ -37,15 +37,13 @@ class CentreController extends Controller
      */
     public function store(Request $request)
     {
+        $centre = Centre::where('name', '=', $request->name)->count();
+        if ($centre > 0)
+            return redirect('centre/add')->withInput()->with('danger', 'Centre already exists!');
+
         $input = $request->all();
         $centre = new Centre($input);
         $centre->name = $request->name;
-
-        $exists = Centre::where('name', $centre->name)->first();
-        if ($exists) {
-            return Redirect::route('addCentre')->withInput()
-                ->with('danger', 'Centre with name "' . $centre->name . '" already exists!');
-        }
 
         if ($centre->save())
             return Redirect::route('centres')->with('success', 'Successfully added centre!');
@@ -86,13 +84,13 @@ class CentreController extends Controller
     public function update(Request $request, $id)
     {
         $centre = Centre::find($id);
-        $centre->name = $request->name;
 
-        $exists = Centre::where('name', $centre->name)->first();
-        if ($exists) {
-            return Redirect::route('editCentre', $id)->withInput()
-                ->with('danger', 'Centre with name "' . $centre->name . '" already exists!');
-        }
+        $centre_check = Centre::where('name', '=', $request->name)->first();
+
+        if ($centre_check && $centre_check->id != $id)
+            return Redirect::route('editCentre', [$id])->withInput()->with('danger', 'Centre already exists');
+
+        $centre->name = $request->name;
 
         if ($centre->update())
             return Redirect::route('centres')->with('success', 'Successfully updated centre');

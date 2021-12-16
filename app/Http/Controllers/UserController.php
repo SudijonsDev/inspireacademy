@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Learner;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
@@ -17,7 +19,8 @@ class UserController extends Controller
      */
     public function index()
     {
-        //
+        $users = User::where('id', '>', 0)->get();
+        return view('user.index', ['users' => $users]);
     }
 
     /**
@@ -38,21 +41,21 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+        $exists = User::where('email', $request->email)->first();
+        if ($exists) {
+            return Redirect::route('addUser')->withInput()
+                ->with('danger', 'User with email "' . $request->email . '" already exists!');
+        }
+
         $input = $request->all();
         $user = new User($input);
         $user->name = $request->name;
         $user->surname = $request->surname;
-        $user->user_name = $request->user_name;
+        $user->email = $request->email;
         $user->password = Hash::make($request->password);
 
-        $exists = User::where('user_name', $user->user_name)->first();
-        if ($exists) {
-            return Redirect::route('user.add')->withInput()
-                ->with('danger', 'User with user_name "' . $user->user_name . '" already exists!');
-        }
-
         if ($user->save())
-            return Redirect::route('learners')->with('success', 'Successfully added user!');
+            return Redirect::route('login')->with('success', 'Successfully added user!');
         else
             return Redirect::route('user.add')->withInput()->withErrors($user->errors());
     }
@@ -109,14 +112,40 @@ class UserController extends Controller
     public function doLogin(Request $request)
     {
         // validate the credentials, create rules for the input
-        $users = User::where('user_name', '=', $request->user_name)->get();
+        $user = User::where('email', '=', $request->email)->first();
 
         // check if email address exists
-        if ($users -> isEmpty())
-            return Redirect::to('login')->withInput()
-                ->with('danger', 'Sorry user name or password is incorrect or you need to register first');
+        if (!$user) {
+            $learner = Learner::where('user_name', '=', $request->email)->first();
+            if (!$learner)
+                return Redirect::to('login')->withInput()->with('danger', 'Please register first');
+            else
+                return redirect('courses');
+        } else {
+            $rules = array(
+                'email' => 'required|email',
+                'password' => 'required|alphaNum|min:3');
 
-        dd('I am here');
+            $validator = Validator::make($request->all(), $rules);
+
+            if ($validator->fails())
+                return Redirect::to('login')
+                    ->withInput($validator)
+                    ->withInput()
+                    ->with('danger', 'Your login failed, Please try again.');
+            else
+                $userData = array(
+                    'email' => $request->email,
+                    'password' => $request->password);
+
+            if (Auth::attempt($userData, true))
+                return redirect('learners');
+            else
+                return Redirect::to('login')
+                    ->withErrors($validator)
+                    ->withInput()
+                    ->with('danger', 'Your login failed, Please try again');
+        }
     }
     public function doLogout()
     {

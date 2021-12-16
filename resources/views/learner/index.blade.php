@@ -26,8 +26,8 @@
                         <th>Name</th>
                         <th>Surname</th>
                         <th>Agreement Received</th>
-                        <th>Centre</th>
                         <th>User Name</th>
+                        <th>Centre</th>
                         <th>Actions</th>
                     </thead>
 
@@ -37,7 +37,7 @@
                             <tr>
                                 <!-- Name -->
                                 <td class="table-text">
-                                    <div>{{ $learner->firstNames }}</div>
+                                    <div>{{ $learner->name }}</div>
                                 </td>
 
                                 <!-- Surname -->
@@ -50,21 +50,17 @@
                                     <div>{{ $learner->agreement }}</div>
                                 </td>
 
+                                <!-- User Name -->
+                                <td class="table-text">
+                                    <div>{{ $learner->user_name }}</div>
+                                </td>
+
                                 <!-- Centre -->
                                 <td class="table-text">
                                     <?php
                                         $centre = \App\Models\Centre::where('id', '=', $learner->centre_id)->first();
                                     ?>
                                     <div>{{ $centre->name }}</div>
-                                </td>
-
-                                <!-- User Name -->
-                                <td class="table-text">
-                                    <?php
-                                        $user = \App\Models\User::where('name', '=', $learner->firstNames)
-                                             ->where('surname', '=', $learner->surname)->first();
-                                    ?>
-                                    <div>{{ $user->user_name }}</div>
                                 </td>
 
                                 <td>
