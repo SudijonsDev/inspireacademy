@@ -6,6 +6,7 @@ use App\Http\Controllers\LearnerController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\RegisteredCourseController;
 
 /*
 |--------------------------------------------------------------------------
@@ -99,3 +100,12 @@ Route::get('course/edit/{id}', [CourseController::class, 'edit'])->name('editCou
 
 // update subject
 Route::PATCH('course/update/{id}', [CourseController::class, 'update'])->name('updateCourse');
+
+// route to list registered courses
+Route::get('regcourses', [RegisteredCourseController::class, 'index'])->name('registeredCourses');
+
+// create a register
+Route::get('regcourse/create', [RegisteredCourseController::class, 'create'])->name('registerLearner');
+
+// store register
+Route::post('regcourse/store', [RegisteredCourseController::class, 'store'])->name('storeRegister');

@@ -32,14 +32,14 @@
 
                     <div class="form-group form-group-sm">
                         {!! Form::label('user_name', 'User Name') !!}
-                        {!! Form::text('user_name', $learner->user_name, array('class' => 'form-control form-control-sm
+                        {!! Form::text('user_name', $user->email, array('class' => 'form-control form-control-sm
                         input-sm', 'required')) !!}
                     </div>
 
                     <div class="form-group">
                         {!! Form::label('password', 'Password') !!}
                         <input class = 'form-control input-sm' type = "password" required name="password" id="password"
-                               value= "{!!$learner->password !!}" >
+                               value= "{!!$user->password !!}" >
                     </div>
 
                     <div class="form-group form-group-sm">

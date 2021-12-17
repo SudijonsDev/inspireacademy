@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Course;
+use App\Models\Learner;
 use App\Models\Subject;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 
 class CourseController extends Controller
@@ -16,8 +19,18 @@ class CourseController extends Controller
      */
     public function index()
     {
+        $user = User::where('name', '=', Auth::user()->name)
+            ->where('surname', '=', Auth::user()->surname)->first();
+        $learner = Learner::where('name', '=', $user->name)
+            ->where('surname', '=', $user->surname)->first();
+
+        if ($user && $learner)
+            $isLearner = 'Y';
+        else
+            $isLearner = 'N';
+
         $courses = Course::where('id', '>', 0)->get();
-        return view('course.index', ['courses' => $courses]);
+        return view('course.index', compact('courses', 'isLearner'));
     }
 
     /**
@@ -46,7 +59,6 @@ class CourseController extends Controller
 
         $input = $request->all();
         $course = new Course($input);
-        $course->name = $request->name;
         $course->grade = $request->grade;
         $course->subject_id = $request->subject_id;
 
@@ -101,7 +113,6 @@ class CourseController extends Controller
             return Redirect::route('editCourse', [$id])->withInput()
                 ->with('danger', 'Course for that grade and subject already exists');
 
-        $course->name = $request->name;
         $course->grade = $request->grade;
         $course->subject_id = $request->subject_id;
 

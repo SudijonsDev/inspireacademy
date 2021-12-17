@@ -16,9 +16,7 @@ class CreateRegisteredCoursesTable extends Migration
         if (!Schema::hasTable('registered_courses')) {
             Schema::create('registered_courses', function (Blueprint $table) {
                 $table->id();
-                $table->string('name');
-                $table->enum('status', ['Y', 'N'])->default('Y');
-                $table->smallInteger('registeredStudents');
+                $table->enum('status', ['A', 'I'])->default('A');
                 $table->unsignedBigInteger('learner_id');
                 $table->unsignedBigInteger('course_id');
                 $table->timestamps();

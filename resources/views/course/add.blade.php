@@ -19,11 +19,6 @@
                     {!! Form::model(new App\Models\Course, ['route' => ['storeCourse']]) !!}
 
                     <div class="form-group">
-                        {!! Form::label('name', 'Course Name') !!}
-                        {!! Form::text('name', Request::old('name'), array('class' => 'form-control', 'required')) !!}
-                    </div>
-
-                    <div class="form-group">
                         {!! Form::label('grade', 'Grade') !!}
                         {!! Form::select('grade', array('Select Grade'=>'Select Grade', '6'=>'6', '7'=>'7', '8'=>'8',
                         '9'=>'9', '10'=>'10', '11'=>'11', '12'=>'12'), null, array('class' => 'form-control')) !!}

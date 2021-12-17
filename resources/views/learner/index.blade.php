@@ -1,18 +1,15 @@
-<!-- app/views/learner/index.blade.php -->
+<!-- app/views/centre/index.blade.php -->
 
 @extends('layout/layout')
 
 @section('content')
-    <!-- List Learner Form... -->
+    <!-- List Centre Form... -->
 
     <div class="panel panel-default">
         <div class="panel-heading">
             <div class="row">
                 <div class="col-xs-6">
                     <h4>Current Learners</h4>
-                </div>
-                <div class="col-xs-6 text-right">
-                    <a href="learner/add" role="button" class="btn btn-default">Add New Learner</a>
                 </div>
             </div>
         </div>
@@ -28,7 +25,7 @@
                         <th>Agreement Received</th>
                         <th>User Name</th>
                         <th>Centre</th>
-                        <th>Actions</th>
+                        <th>**</th>
                     </thead>
 
                     <!-- Table Body -->
@@ -52,13 +49,17 @@
 
                                 <!-- User Name -->
                                 <td class="table-text">
-                                    <div>{{ $learner->user_name }}</div>
+                                    <?php
+                                    $user = \App\Models\User::where('name', '=', $learner->name)
+                                        ->where('surname', '=', $learner->surname)->first();
+                                    ?>
+                                    <div>{{ $user->email }}</div>
                                 </td>
 
                                 <!-- Centre -->
                                 <td class="table-text">
                                     <?php
-                                        $centre = \App\Models\Centre::where('id', '=', $learner->centre_id)->first();
+                                    $centre = \App\Models\Centre::where('id', '=', $learner->centre_id)->first();
                                     ?>
                                     <div>{{ $centre->name }}</div>
                                 </td>
@@ -66,11 +67,13 @@
                                 <td>
                                     <div class="row">
                                         <div class="col-xs-12 col-sm-4 col-md-2">
-                                            {!! Form::model($learner, ['method' => 'GET', 'route' => ['editLearner',
-                                            $learner->id]]) !!}
-                                            <button type="submit" class="btn btn-warning">
-                                                <i class="fa fa-trash"></i> Edit </button>
-                                            {!! Form::close() !!}
+                                            @if(\Illuminate\Support\Facades\Auth::user()->admin == 'N')
+                                                {!! Form::model($learner, ['method' => 'GET', 'route' => ['editLearner',
+                                                    $learner->id]]) !!}
+                                                <button type="submit" class="btn btn-warning">
+                                                    <i class="fa fa-trash"></i> Edit </button>
+                                                {!! Form::close() !!}
+                                            @endif
                                         </div>
                                     </div>
                                 </td>
