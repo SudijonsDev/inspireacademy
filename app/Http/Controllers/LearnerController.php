@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Centre;
 use App\Models\Learner;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
 
@@ -17,7 +19,12 @@ class LearnerController extends Controller
      */
     public function index()
     {
-        $learners = Learner::where('id', '>', 0)->get();
+        if (Auth::user()->admin == 'Y')
+            $learners = Learner::where('id', '>', 0)->get();
+        else
+            $learners = Learner::where('name', '=', Auth::user()->name)
+                ->where('surname', '=', Auth::user()->surname)->get();
+
         return view('learner.index', compact('learners'));
     }
 
@@ -40,22 +47,32 @@ class LearnerController extends Controller
      */
     public function store(Request $request)
     {
+        if ($request->centre_id == null)
+            return redirect('learner/add')->withInput()->with('danger', 'Centre cannot be null');
+
         $learner = Learner::where('name', '=', $request->name)
             ->where('surname', '=', $request->surname)->count();
         if ($learner > 0)
-            return redirect('learner/add')->withInput()->with('danger', 'Learner already exists!');
+            return redirect('learner/add')->withInput()->with('danger', 'Learner already exists');
 
         $input = $request->all();
         $learner = new Learner($input);
         $learner->name = $request->name;
         $learner->surname = $request->surname;
-        $learner->user_name = $request->user_name;
-        $learner->password = Hash::make($request->password);
         $learner->centre_id = $request->centre_id;
 
-        if ($learner->save())
-            return Redirect::route('courses')->with('success', 'Successfully added learner!');
-        else
+        //store learner as a user
+        $user = new User($input);
+        $user->name = $request->name;
+        $user->surname = $request->surname;
+        $user->admin = 'N';
+        $user->email = $request->user_name;
+        $user->password = Hash::make($request->password);
+
+        if ($learner->save()) {
+            $user->save();
+            return Redirect::route('login')->with('success', 'Successfully added learner!');
+        } else
             return Redirect::route('learner.add')->withInput()->withErrors($learner->errors());
     }
 
@@ -79,12 +96,14 @@ class LearnerController extends Controller
     public function edit($id)
     {
         $learner = Learner::find($id);
+        $user = User::where('name', '=', $learner->name)
+            ->where('surname', '=', $learner->surname)->first();
         $centres = Centre::where('id', '>', 0)->get();
         $centre = Centre::where('id', '=', $learner->centre_id)->first();
         $cid = $centre->id;
-        $name = $learner->name . ' ' . $learner->name;
+        $name = $learner->name . ' ' . $learner->surname;
 
-        return view('learner.edit', compact('learner', 'centres', 'cid', 'name'));
+        return view('learner.edit', compact('learner', 'user', 'centres', 'cid', 'name'));
     }
 
     /**
@@ -104,15 +123,21 @@ class LearnerController extends Controller
         if ($learner_check && $learner_check->id != $id)
             return Redirect::route('editLearner', [$id])->withInput()->with('danger', 'Learner already exists');
 
+        $user = User::where('name', '=', $learner->name)
+            ->where('surname', '=', $learner->surname)->first();
+
         $learner->name = $request->name;
         $learner->surname = $request->surname;
-        $learner->user_name = $request->user_name;
-        $learner->password = Hash::make($request->password);
         $learner->centre_id = $request->centre_id;
+        $user->name = $request->name;
+        $user->surname = $request->surname;
+        $user->email = $request->user_name;
+        $user->password = Hash::make($request->password);
 
-        if ($learner->update())
-            return Redirect::route('courses')->with('success', 'Successfully updated learner');
-        else
+        if ($learner->update()) {
+            $user->update();
+            return Redirect::route('logout')->with('success', 'Successfully updated learner');
+        } else
             return Redirect::route('editLearner', [$id])->withInput()->withErrors($learner->errors());
     }
 

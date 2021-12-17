@@ -12,7 +12,9 @@
                     <h4>Current Courses</h4>
                 </div>
                 <div class="col-xs-6 text-right">
-                    <a href="course/add" role="button" class="btn btn-default">Add New Course</a>
+                    @if($isLearner == 'N')
+                        <a href="course/add" role="button" class="btn btn-default">Add New Course</a>
+                    @endif
                 </div>
             </div>
         </div>
@@ -25,7 +27,6 @@
                     <thead>
                         <th>Name</th>
                         <th>Grade</th>
-                        <th>Subject</th>
                         <th>Actions</th>
                     </thead>
 
@@ -35,7 +36,10 @@
                             <tr>
                                 <!-- Course Name -->
                                 <td class="table-text">
-                                    <div>{{ $course->name }}</div>
+                                    <?php
+                                        $subject = \App\Models\Subject::where('id', '=', $course->subject_id)->first();
+                                    ?>
+                                    <div>{{ $subject->name }}</div>
                                 </td>
 
                                 <!-- Grade -->
@@ -43,18 +47,18 @@
                                     <div>{{ $course->grade }}</div>
                                 </td>
 
-                                <!-- Subject -->
-                                <td class="table-text">
-                                    <div>{{ $course->subject_id }}</div>
-                                </td>
-
                                 <td>
                                     <div class="row">
                                         <div class="col-xs-12 col-sm-4 col-md-2">
-                                            {!! Form::model($course, ['method' => 'GET', 'route' => ['editCourse',
-                                            $course->id]]) !!}
-                                            <button type="submit" class="btn btn-warning">
-                                                <i class="fa fa-trash"></i> Edit </button>
+                                            @if($isLearner == 'N')
+                                                {!! Form::model($course, ['method' => 'GET', 'route' => ['editCourse',
+                                                    $course->id]]) !!}
+                                                <button type="submit" class="btn btn-warning">
+                                                    <i class="fa fa-trash"></i> Edit </button>
+                                            @else
+                                                <a href="{!!URL::route('registerLearner', ['id' => $course->id])!!}"
+                                                    class="btn btn-warning">Register</a>
+                                            @endif
                                             {!! Form::close() !!}
                                         </div>
                                     </div>

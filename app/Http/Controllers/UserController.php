@@ -51,6 +51,7 @@ class UserController extends Controller
         $user = new User($input);
         $user->name = $request->name;
         $user->surname = $request->surname;
+        $user->admin = 'Y';
         $user->email = $request->email;
         $user->password = Hash::make($request->password);
 
@@ -115,15 +116,11 @@ class UserController extends Controller
         $user = User::where('email', '=', $request->email)->first();
 
         // check if email address exists
-        if (!$user) {
-            $learner = Learner::where('user_name', '=', $request->email)->first();
-            if (!$learner)
-                return Redirect::to('login')->withInput()->with('danger', 'Please register first');
-            else
-                return redirect('courses');
-        } else {
+        if (!$user)
+            return Redirect::to('login')->withInput()->with('danger', 'Please register first');
+        else {
             $rules = array(
-                'email' => 'required|email',
+                'email' => '',
                 'password' => 'required|alphaNum|min:3');
 
             $validator = Validator::make($request->all(), $rules);
@@ -138,9 +135,14 @@ class UserController extends Controller
                     'email' => $request->email,
                     'password' => $request->password);
 
-            if (Auth::attempt($userData, true))
-                return redirect('learners');
-            else
+            if (Auth::attempt($userData, true)) {
+                $learner = Learner::where('name', '=', $user->name)
+                    ->where('surname', '=', $user->surname)->first();
+                if ($learner)
+                    return redirect('courses');
+                else
+                    return redirect('learners');
+            } else
                 return Redirect::to('login')
                     ->withErrors($validator)
                     ->withInput()

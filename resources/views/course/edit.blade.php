@@ -19,12 +19,6 @@
                     {!! Form::model($course, ['method' => 'PATCH', 'route' => ['updateCourse', $course->id]]) !!}
 
                     <div class="form-group form-group-sm">
-                        {!! Form::label('name', 'Course Name') !!}
-                        {!! Form::text('name', $course->name, array('class' => 'form-control form-control-sm
-                        input-sm', 'required')) !!}
-                    </div>
-
-                    <div class="form-group form-group-sm">
                         {!! Form::label('grade', 'Grade') !!}
                         {!! Form::select('grade', array('6'=>'6', '7'=>'7', '8'=>'8', '9'=>'9', '10'=>'10', '11'=>'11',
                         '12'=>'12'), null, array('class' => 'form-control')) !!}
