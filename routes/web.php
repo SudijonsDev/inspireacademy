@@ -7,6 +7,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\RegisteredCourseController;
+use App\Http\Controllers\SessionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -37,6 +38,12 @@ Route::get('user/add', [UserController::class, 'add'])->name('addUser');
 
 // store user
 Route::post('user/store', [UserController::class, 'store'])->name('storeUser');
+
+// edit user
+Route::get('user/edit/{id}', [UserController::class, 'edit'])->name('editUser');
+
+// update user
+Route::PATCH('user/update/{id}', [UserController::class, 'update'])->name('updateUser');
 
 // process the logout
 Route::get('users/logout', [UserController::class, 'doLogout'])->name('logout');
@@ -109,3 +116,12 @@ Route::get('regcourse/create', [RegisteredCourseController::class, 'create'])->n
 
 // store register
 Route::post('regcourse/store', [RegisteredCourseController::class, 'store'])->name('storeRegister');
+
+// deregister course
+Route::get('regcourse/destroy/{id}', [RegisteredCourseController::class, 'destroy'])->name('deRegister');
+
+// register session
+Route::get('session/add/{id}', [SessionController::class, 'add'])->name('addSession');
+
+// store session
+Route::post('session/store', [SessionController::class, 'store'])->name('storeSession');

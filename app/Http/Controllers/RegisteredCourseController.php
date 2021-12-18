@@ -21,7 +21,14 @@ class RegisteredCourseController extends Controller
      */
     public function index()
     {
-        //
+        $user = User::where('name', '=', Auth::user()->name)
+            ->where('surname', '=', Auth::user()->surname)->first();
+        $learner = Learner::where('name', '=', $user->name)
+            ->where('surname', '=', $user->surname)->first();
+        $registered_courses = Registered_Course::where('learner_id', '=', $learner->id)
+            ->where('status', '=', 'A')->get();
+
+        return view('registercourse.index', compact('learner', 'registered_courses'));
     }
 
     /**
@@ -137,8 +144,14 @@ class RegisteredCourseController extends Controller
      * @param  \App\Models\Registered_Course  $registered_Course
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Registered_Course $registered_Course)
+    public function destroy($id)
     {
-        //
+        $registered_course = Registered_Course::find($id);
+        $registered_course->status = 'I';
+
+        if ($registered_course->update())
+            return Redirect::route('registeredCourses')->with('success', 'Successfully deregister user from course');
+        else
+            return Redirect::route('registeredCourses', [$id])->withInput()->withErrors($registered_course->errors());
     }
 }

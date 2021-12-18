@@ -80,7 +80,8 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        //
+        $user = User::find($id);
+        return view('user.edit', ['user' => $user]);
     }
 
     /**
@@ -92,7 +93,23 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $user = User::find($id);
+        $user->name = $request->get('name');
+        $user->surname = $request->get('surname');
+        $user->email = $request->get('email');
+
+        if ($request->get('password') != $user->password)
+            $user->password = Hash::make($request->get('password'));
+
+        $exists = User::where('email', $user->email)->first();
+        if ($exists  && $exists->id != $id) {
+            return Redirect::route('user.edit', [$id])->withInput()->with('danger', 'User with email "' . $user->email . '" already exists!');
+        }
+
+        if ($user->update())
+            return Redirect::route('login')->with('success', 'Successfully updated user!');
+        else
+            return Redirect::route('user.edit', [$id])->withInput()->withErrors($user->errors());
     }
 
     /**
@@ -139,7 +156,7 @@ class UserController extends Controller
                 $learner = Learner::where('name', '=', $user->name)
                     ->where('surname', '=', $user->surname)->first();
                 if ($learner)
-                    return redirect('courses');
+                    return redirect('regcourses');
                 else
                     return redirect('learners');
             } else

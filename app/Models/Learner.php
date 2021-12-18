@@ -14,5 +14,5 @@ class Learner extends Model
      *
      * @var array
      */
-    protected $fillable = ['name', 'surname', 'agreement', 'centre_id'];
+    protected $fillable = ['name', 'surname', 'agreement', 'path', 'centre_id'];
 }

@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
 
 class LearnerController extends Controller
 {
@@ -47,6 +48,7 @@ class LearnerController extends Controller
      */
     public function store(Request $request)
     {
+        $agreement = null;
         if ($request->centre_id == null)
             return redirect('learner/add')->withInput()->with('danger', 'Centre cannot be null');
 
@@ -60,6 +62,15 @@ class LearnerController extends Controller
         $learner->name = $request->name;
         $learner->surname = $request->surname;
         $learner->centre_id = $request->centre_id;
+
+        $file = $request->file('agreement');
+        if ($file == null)
+            return redirect('learner/add')->withInput()->with('danger', 'Parent/Guardian"s agreement letter is needed');
+        else {
+            $path = $request->file('agreement')->store('public/parentsAgreement');
+            $learner->agreement = $file;
+            $learner->path = $path;
+        }
 
         //store learner as a user
         $user = new User($input);
@@ -129,10 +140,13 @@ class LearnerController extends Controller
         $learner->name = $request->name;
         $learner->surname = $request->surname;
         $learner->centre_id = $request->centre_id;
+
         $user->name = $request->name;
         $user->surname = $request->surname;
         $user->email = $request->user_name;
-        $user->password = Hash::make($request->password);
+
+        if ($request->get('password') != $user->password)
+            $user->password = Hash::make($request->password);
 
         if ($learner->update()) {
             $user->update();

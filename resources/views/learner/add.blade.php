@@ -15,8 +15,7 @@
                     <!-- if there are creation errors, they will show here -->
                     {!! HTML::ul($errors->all()) !!}
 
-
-                    {!! Form::model(new App\Models\Learner, ['route' => ['storeLearner']]) !!}
+                    {!! Form::open(array('route' => 'storeLearner', 'method'=>'POST','files'=>true)) !!}
 
                     <div class="form-group">
                         {!! Form::label('name', 'Name') !!}
@@ -36,6 +35,11 @@
                     <div class="form-group">
                         {!! Form::label('password', 'Password') !!}
                         {!! Form::password('password', array('class' => 'form-control input-sm', 'required')) !!}
+                    </div>
+
+                    <div class="form-group">
+                        {!! Form::label('agreement', 'Signed Agreement') !!}
+                        {!! Form::file('agreement', array('class' => 'form-control')) !!}
                     </div>
 
                     <div class="form-group">

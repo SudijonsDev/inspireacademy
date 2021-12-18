@@ -1,9 +1,9 @@
-<!-- app/views/centre/index.blade.php -->
+<!-- app/views/learner/index.blade.php -->
 
 @extends('layout/layout')
 
 @section('content')
-    <!-- List Centre Form... -->
+    <!-- List Learner Form... -->
 
     <div class="panel panel-default">
         <div class="panel-heading">
@@ -22,7 +22,6 @@
                     <thead>
                         <th>Name</th>
                         <th>Surname</th>
-                        <th>Agreement Received</th>
                         <th>User Name</th>
                         <th>Centre</th>
                         <th>**</th>
@@ -40,11 +39,6 @@
                                 <!-- Surname -->
                                 <td class="table-text">
                                     <div>{{ $learner->surname }}</div>
-                                </td>
-
-                                <!-- Agreement Letter -->
-                                <td class="table-text">
-                                    <div>{{ $learner->agreement }}</div>
                                 </td>
 
                                 <!-- User Name -->
