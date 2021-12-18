@@ -16,12 +16,15 @@ class CreateSessionsTable extends Migration
         if (!Schema::hasTable('sessions')) {
             Schema::create('sessions', function (Blueprint $table) {
                 $table->id();
-                $table->string('name');
+                $table->date('date_sessionDone');
+                $table->integer('marksReceived');
                 $table->unsignedBigInteger('course_id');
+                $table->unsignedBigInteger('learner_id');
                 $table->timestamps();
             });
             Schema::table('sessions', function ($table) {
                 $table->foreign('course_id')->references('id')->on('courses');
+                $table->foreign('learner_id')->references('id')->on('learners');
             });
         }
     }

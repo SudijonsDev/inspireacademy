@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Registered_Course;
 use App\Models\Session;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
 
 class SessionController extends Controller
 {
@@ -22,9 +25,20 @@ class SessionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function add($id)
     {
-        //
+        $regCourse = Registered_Course::find($id);
+        $session = new Session();
+        $date = Carbon::now();
+        $session->date_sessionDone = $date->format('Y-m-d');
+        $session->marksReceived = 75;
+        $session->course_id = $regCourse->course_id;
+        $session->learner_id = $regCourse->learner_id;
+
+        if ($session->save())
+            return Redirect::route('registeredCourses')->with('success', 'Successfully added a session for today');
+        else
+            return Redirect::route('registeredCourses')->withInput()->withErrors($session->errors());
     }
 
     /**
