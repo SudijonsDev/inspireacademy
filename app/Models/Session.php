@@ -14,5 +14,5 @@ class Session extends Model
      *
      * @var array
      */
-    protected $fillable = ['name', 'course_id'];
+    protected $fillable = ['date_sessionDone', 'marksReceived', 'course_id', 'learner_id'];
 }

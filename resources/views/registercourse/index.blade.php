@@ -25,7 +25,6 @@
                     <thead>
                         <th>Name</th>
                         <th>Action</th>
-                    <th></th>
                     </thead>
 
                     <!-- Table Body -->
@@ -38,7 +37,7 @@
                                     $course = \App\Models\Course::where('id', '=', $reg_course->course_id)->first();
                                     $subject = \App\Models\Subject::where('id', '=', $course->subject_id)->first();
                                     ?>
-                                    <div>{{ $subject->name }}</div>
+                                    <div>{{ 'Grade' }} {{ $course->grade }} - {{ $subject->name }}</div>
                                 </td>
 
                                 <td>
