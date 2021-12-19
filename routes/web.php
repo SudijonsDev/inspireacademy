@@ -8,6 +8,7 @@ use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\RegisteredCourseController;
 use App\Http\Controllers\SessionController;
+use App\Http\Controllers\ReportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -125,3 +126,29 @@ Route::get('session/add/{id}', [SessionController::class, 'add'])->name('addSess
 
 // store session
 Route::post('session/store', [SessionController::class, 'store'])->name('storeSession');
+
+// route to list sessions per week
+Route::get('session/weeklyReport', [SessionController::class, 'weekSession'])->name('weekSession');
+
+// route to list created courses per subject
+Route::get('reports/subAndCourses', [ReportController::class, 'coursesPerSubject'])->name('coursesPerSubject');
+
+// route to search learners per selected course and centre
+Route::get('reports/learnerCentCour', [ReportController::class, 'searchLearnersCentreCourse'])->name('courseCentre');
+
+// route to list learners per select course and centre
+Route::get('reports/learnerCentCourRep', [ReportController::class, 'learnersCentreCourseRep'])->name('courseCentreRep');
+
+// route to search learners per selected course
+Route::get('reports/learnersPerCourse', [ReportController::class, 'searchLearnersPerCourse'])->name('learnersPerCourse');
+
+// route to list learners per selected course
+Route::get('reports/learnersCourseRep', [ReportController::class, 'learnersPerCourseRep'])->name('learnersCourseRep');
+
+// route to search learners performance across course or across year
+Route::get('report/learnersPerformance', [ReportController::class, 'learnersPerformance'])->name('learnersPerformance');
+
+// route to list learners performance across course or across year
+Route::get('report/learnersPerformanceRep', [ReportController::class, 'learnersPerformanceRep'])->name('learnersPerformRep');
+
+

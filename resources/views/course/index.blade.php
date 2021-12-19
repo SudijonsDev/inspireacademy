@@ -14,6 +14,8 @@
                 <div class="col-xs-6 text-right">
                     @if($isLearner == 'N')
                         <a href="course/add" role="button" class="btn btn-default">Add New Course</a>
+                    @else
+                        <a href="regcourses" role="button" class="btn btn-default">Back</a>
                     @endif
                 </div>
             </div>

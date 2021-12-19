@@ -21,16 +21,23 @@
                             <li><a href="{!!URL::route('subjects')!!}">Subjects</a></li>
                             <li><a href="{!!URL::route('courses')!!}">Courses</a></li>
                         </div>
+                        <span class="label label-primary col-xs-12 col-sm-12 col-md-12" style="cursor: pointer;" data-toggle="collapse" data-target="#reportMenu">Reports</span>
+                        <div id="reportMenu" class="collapse in">
+                            <li><a href="{!! URL::route('coursesPerSubject') !!}">Courses Per Subject</a> </li>
+                            <li><a href="{!! URL::route('courseCentre') !!}">Learners Per Course and Centre</a> </li>
+                            <li><a href="{!! URL::route('learnersPerCourse') !!}">Learners Per Course</a> </li>
+                            <li><a href="{!! URL::route('learnersPerformance') !!}">Learners Performance</a> </li>
+                        </div>
                     @else
                         <span class="label label-primary col-xs-12 col-sm-12 col-md-12" style="cursor: pointer;" data-toggle="collapse" data-target="#adminMenu">Administration</span>
                         <div id="adminMenu" class="collapse in">
                             <li><a href="{!! URL::route('learners') !!}">Learners</a> </li>
                         </div>
+                        <span class="label label-primary col-xs-12 col-sm-12 col-md-12" style="cursor: pointer;" data-toggle="collapse" data-target="#reportMenu">Reports</span>
+                        <div id="reportMenu" class="collapse in">
+                            <li><a href="{!! URL::route('learnersPerformance') !!}">Learners Performance</a> </li>
+                        </div>
                     @endif
-                    <span class="label label-primary col-xs-12 col-sm-12 col-md-12" style="cursor: pointer;" data-toggle="collapse" data-target="#reportMenu">Reports</span>
-                    <div id="reportMenu" class="collapse in">
-
-                    </div>
                     <div><li><a href="{!!URL::route('logout')!!}">Logout</a></li></div>
                 </ul>
             </div>

@@ -28,12 +28,23 @@ class SessionController extends Controller
     public function add($id)
     {
         $regCourse = Registered_Course::find($id);
-        $session = new Session();
         $date = Carbon::now();
-        $session->date_sessionDone = $date->format('Y-m-d');
-        $session->marksReceived = 75;
-        $session->course_id = $regCourse->course_id;
-        $session->learner_id = $regCourse->learner_id;
+        $dateCheck = $date->format('Y-m-d');
+
+        $session = Session::where('date_sessionDone', '=', $dateCheck)
+            ->where('course_id', '=', $regCourse->course_id)
+            ->where('learner_id', '=', $regCourse->learner_id)->count();
+
+        if ($session > 0)
+            return Redirect::route('registeredCourses')
+                ->with('danger', 'You have already added a session for the selected course');
+        else {
+            $session = new Session();
+            $session->date_sessionDone = $date->format('Y-m-d');
+            $session->marksReceived = 75;
+            $session->course_id = $regCourse->course_id;
+            $session->learner_id = $regCourse->learner_id;
+        }
 
         if ($session->save())
             return Redirect::route('registeredCourses')->with('success', 'Successfully added a session for today');
@@ -95,5 +106,10 @@ class SessionController extends Controller
     public function destroy(Session $session)
     {
         //
+    }
+
+    public function weekSession(Request $request)
+    {
+
     }
 }

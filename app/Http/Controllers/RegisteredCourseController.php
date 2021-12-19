@@ -40,6 +40,36 @@ class RegisteredCourseController extends Controller
     {
         $course = Course::where('id', '=', $request->id)->first();
         $subject = Subject::where('id', '=', $course->subject_id)->first();
+
+        $user = User::where('name', '=', Auth::user()->name)
+            ->where('surname', '=', Auth::user()->surname)->first();
+        $learner = Learner::where('name', '=', $user->name)
+            ->where('surname', '=', $user->surname)->first();
+
+        $regCourseCnt = Registered_Course::where('status', '=', 'A')
+            ->where('learner_id', '=', $learner->id)->count();
+
+        if($regCourseCnt > 2)
+            return Redirect::route('registeredCourses')->with('danger', 'Learner can only register for 3 courses');
+
+        $registered_courses = Registered_Course::where('status', '=', 'A')
+            ->where('learner_id', '=', $learner->id)->get();
+
+        foreach ($registered_courses as $value)
+        {
+            $check_course = Course::where('id', '=', $value->course_id)->first();
+            $check_subject = Subject::where('id', '=', $check_course->subject_id)->first();
+
+            if($check_subject && $check_subject->id == $subject->id)
+                return Redirect::route('registeredCourses')->with('danger', 'Learner cannot register for different grades');
+
+            if($check_course->grade < 8 && ($subject->name == 'Physical Science' || $subject->name == 'Accounting'))
+            return Redirect::route('registeredCourses')->with('danger', 'Learner cannot register for different grades');
+
+            if ($check_course->grade != $course->grade)
+                return Redirect::route('registeredCourses')->with('danger', 'Learner cannot register for different grades');
+        }
+
         $course_name = $subject->name;
         $grade = $course->grade;
         return view('registercourse.create', compact('course_name', 'grade'));
