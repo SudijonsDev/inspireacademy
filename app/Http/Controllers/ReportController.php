@@ -8,7 +8,9 @@ use App\Models\Learner;
 use App\Models\Registered_Course;
 use App\Models\Session;
 use App\Models\Subject;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class ReportController extends Controller
@@ -99,9 +101,21 @@ class ReportController extends Controller
 
     public function learnersPerformanceRep(Request $request)
     {
-        $sql = "select l.name, surname, grade, subject_id, avg(marksReceived) as marks from sessions ses, courses c,
-            subjects s, learners l where ses.course_id = $request->course_id and ses.course_id = c.id and c.subject_id = 
-            s.id and ses.learner_id = l.id group by l.name, surname, grade, subject_id";
+        $user = User::where('name', '=', Auth::user()->name)
+            ->where('surname', '=', Auth::user()->surname)->first();
+
+        if ($user->admin == 'Y')
+            $sql = "select l.name, surname, grade, subject_id, avg(marksReceived) as marks from sessions ses, courses c,
+              subjects s, learners l where ses.course_id = $request->course_id and ses.course_id = c.id and c.subject_id = 
+              s.id and ses.learner_id = l.id group by l.name, surname, grade, subject_id";
+        else {
+            $learner = Learner::where('name', '=', $user->name)
+                ->where('surname', '=', $user->surname)->first();
+
+            $sql = "select l.name, surname, grade, subject_id, avg(marksReceived) as marks from sessions ses, courses c,
+              subjects s, learners l where ses.course_id = $request->course_id and ses.course_id = c.id and c.subject_id = 
+              s.id and ses.learner_id = l.id and ses.learner_id = $learner->id group by l.name, surname, grade, subject_id";
+        }
         $sessions = DB::select($sql);
 
         return view('reports.learnersPerformRep', ['sessions' => $sessions]);

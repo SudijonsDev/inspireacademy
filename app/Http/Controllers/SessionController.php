@@ -41,7 +41,7 @@ class SessionController extends Controller
         else {
             $session = new Session();
             $session->date_sessionDone = $date->format('Y-m-d');
-            $session->marksReceived = 75;
+            $session->marksReceived = 0;
             $session->course_id = $regCourse->course_id;
             $session->learner_id = $regCourse->learner_id;
         }
